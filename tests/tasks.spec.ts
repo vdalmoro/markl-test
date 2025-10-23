@@ -3,9 +3,11 @@ import { TaskModel } from "./fixtures/task.model";
 import { deleteTaskByHelper, createTaskByHelper } from "./support/helpers";
 import { TasksPage } from "./support/pages/tasks";
 
-import data from "./fixtures/tasks.json";
+import data from "./fixtures/tasks.json" with { type: 'json' };
 
-test("Deve poder cadastrar uma nova tarefa", async ({ page, request }) => {
+test.describe("cadastro",  () => {
+
+  test("Deve poder cadastrar uma nova tarefa", async ({ page, request }) => {
   const task = data.success as TaskModel;
 
   await deleteTaskByHelper(request, task.name);
@@ -45,4 +47,38 @@ test("Campo obrigatório ao cadastrar uma nova tarefa", async ({ page }) => {
     (e) => (e as HTMLInputElement).validationMessage
   );
   expect(validationMessage).toEqual("This is a required field");
+});
+  
+});
+
+test.describe("atualização", () => {
+
+  test("Concluir tarefa", async ({ page, request }) => {
+  const task = data.update as TaskModel;
+
+  await deleteTaskByHelper(request, task.name);
+  await createTaskByHelper(request, task);
+
+  const tasksPage: TasksPage = new TasksPage(page);
+
+  await tasksPage.goto();
+  await tasksPage.toggle(task.name);
+  await tasksPage.shouldBeDone(task.name);
+});
+});
+
+test.describe("exclusão", () => {
+
+  test.only("Excluir tarefa", async ({ page, request }) => {
+  const task = data.delete as TaskModel;
+
+  await deleteTaskByHelper(request, task.name);
+  await createTaskByHelper(request, task);
+
+  const tasksPage: TasksPage = new TasksPage(page);
+
+  await tasksPage.goto();
+  await tasksPage.remove(task.name);
+  await tasksPage.shouldNotExist(task.name);
+});
 });
