@@ -1,0 +1,14 @@
+{
+    "success": {
+        "name": "Ler um livro de Typescript",
+        "is_done": false
+    },
+    "duplicate":{
+        "name": "Comprar Mostarda",
+        "is_done": false
+    },
+    "required":{
+        "name": "",
+        "is_done": false
+    }
+}
