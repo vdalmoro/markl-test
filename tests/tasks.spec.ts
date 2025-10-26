@@ -5,14 +5,18 @@ import { TasksPage } from "./support/pages/tasks";
 
 import data from "./fixtures/tasks.json" with { type: 'json' };
 
+let tasksPage: TasksPage;
+
+test.beforeEach(({ page }) => {
+  tasksPage = new TasksPage(page);
+});
+
 test.describe("cadastro",  () => {
 
-  test("Deve poder cadastrar uma nova tarefa", async ({ page, request }) => {
+  test("Deve poder cadastrar uma nova tarefa", async ({ request }) => {
   const task = data.success as TaskModel;
 
   await deleteTaskByHelper(request, task.name);
-
-  const tasksPage: TasksPage = new TasksPage(page);
 
   await tasksPage.goto();
   await tasksPage.create(task);
@@ -20,7 +24,6 @@ test.describe("cadastro",  () => {
 });
 
 test("Não deve poder cadastrar uma tarefa com nome duplicado", async ({
-  page,
   request,
 }) => {
   const task = data.duplicate as TaskModel;
@@ -28,17 +31,13 @@ test("Não deve poder cadastrar uma tarefa com nome duplicado", async ({
   await deleteTaskByHelper(request, task.name);
   await createTaskByHelper(request, task);
 
-  const tasksPage: TasksPage = new TasksPage(page);
-
   await tasksPage.goto();
   await tasksPage.create(task);
   await tasksPage.alertHaveText("Task already exists!");
 });
 
-test("Campo obrigatório ao cadastrar uma nova tarefa", async ({ page }) => {
+test("Campo obrigatório ao cadastrar uma nova tarefa", async () => {
   const task = data.required as TaskModel;
-
-  const tasksPage: TasksPage = new TasksPage(page);
 
   await tasksPage.goto();
   await tasksPage.create(task);
@@ -53,13 +52,11 @@ test("Campo obrigatório ao cadastrar uma nova tarefa", async ({ page }) => {
 
 test.describe("atualização", () => {
 
-  test("Concluir tarefa", async ({ page, request }) => {
+  test("Concluir tarefa", async ({ request }) => {
   const task = data.update as TaskModel;
 
   await deleteTaskByHelper(request, task.name);
   await createTaskByHelper(request, task);
-
-  const tasksPage: TasksPage = new TasksPage(page);
 
   await tasksPage.goto();
   await tasksPage.toggle(task.name);
@@ -69,13 +66,11 @@ test.describe("atualização", () => {
 
 test.describe("exclusão", () => {
 
-  test.only("Excluir tarefa", async ({ page, request }) => {
+  test("Excluir tarefa", async ({ request }) => {
   const task = data.delete as TaskModel;
 
   await deleteTaskByHelper(request, task.name);
   await createTaskByHelper(request, task);
-
-  const tasksPage: TasksPage = new TasksPage(page);
 
   await tasksPage.goto();
   await tasksPage.remove(task.name);

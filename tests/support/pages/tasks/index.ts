@@ -11,7 +11,7 @@ export class TasksPage {
   }
 
   async goto() {
-    await this.page.goto("http://localhost:8080");
+    await this.page.goto("/");
   }
 
   async create(task: TaskModel) {
